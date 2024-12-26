@@ -1,0 +1,6 @@
+pytesseract
+# python3-tk  # Included in Python's standard library, version added for completeness
+openai==0.28  # For ChatGPT API integration
+whisper    # For Whisper API integration (if applicable)
+pillow   # For image handling (if needed for Vision Extractor)
+# tkinter
