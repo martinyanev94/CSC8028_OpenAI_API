@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Toolkit</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container my-5">
+        <h1 class="text-center">AI Toolkit</h1>
+        <div class="row my-4">
+            <!-- Vision Extractor -->
+            <div class="col-md-4">
+                <h3>Vision Extractor</h3>
+                <input type="file" id="image-input" class="form-control">
+                <button class="btn btn-primary mt-2" onclick="extractText()">Extract Text</button>
+                <p id="vision-output"></p>
+            </div>
+
+            <!-- Audio Translator -->
+<div class="col-md-4">
+    <h3>Audio Translator</h3>
+    <form id="audio-form" method="POST" action="/audio-translation" enctype="multipart/form-data">
+        <!-- File Input -->
+        <input type="file" name="file" id="audio-input" class="form-control" accept="audio/*" required>
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary mt-2">Translate Audio</button>
+    </form>
+    <!-- Display Result -->
+    <p id="audio-output"></p>
+</div>
+
+
+            <!-- Resume Builder -->
+            <div class="col-md-4">
+                <h3>Resume Builder</h3>
+                <textarea id="job-desc" class="form-control" rows="3" placeholder="Enter job description"></textarea>
+                <button class="btn btn-primary mt-2" onclick="generateResume()">Generate Resume</button>
+                <p id="resume-output"></p>
+            </div>
+        </div>
+
+        <div class="row my-4">
+            <!-- Question Generator -->
+            <div class="col-md-6">
+                <h3>Question Generator</h3>
+                <textarea id="question-text" class="form-control" rows="3" placeholder="Enter text"></textarea>
+                <button class="btn btn-primary mt-2" onclick="generateQuestions()">Generate Questions</button>
+                <p id="questions-output"></p>
+            </div>
+
+            <!-- Grammar Fixer -->
+            <div class="col-md-6">
+                <h3>Grammar Fixer</h3>
+                <textarea id="grammar-text" class="form-control" rows="3" placeholder="Enter text with grammar errors"></textarea>
+                <button class="btn btn-primary mt-2" onclick="fixGrammar()">Fix Grammar</button>
+                <p id="grammar-output"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function extractText() {
+            const fileInput = document.getElementById('image-input').files[0];
+            const formData = new FormData();
+            formData.append('image', fileInput);
+            const response = await fetch('/extract-text', { method: 'POST', body: formData });
+            const data = await response.json();
+            document.getElementById('vision-output').textContent = data.text || data.error;
+        }
+
+        async function translateAudio() {
+            const fileInput = document.getElementById('audio-input').files[0];
+            const formData = new FormData();
+            formData.append('audio', fileInput);
+            const response = await fetch('/translate-audio', { method: 'POST', body: formData });
+            const data = await response.json();
+            document.getElementById('audio-output').textContent = data.translation || data.error;
+        }
+
+        async function generateResume() {
+            const jobDesc = document.getElementById('job-desc').value;
+            const response = await fetch('/generate-resume', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ description: jobDesc })
+            });
+            const data = await response.json();
+            document.getElementById('resume-output').textContent = data.resume || data.error;
+        }
+
+        async function generateQuestions() {
+            const text = document.getElementById('question-text').value;
+            const response = await fetch('/generate-questions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text })
+            });
+            const data = await response.json();
+            document.getElementById('questions-output').textContent = data.questions || data.error;
+        }
+
+        async function fixGrammar() {
+            const text = document.getElementById('grammar-text').value;
+            const response = await fetch('/fix-grammar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text })
+            });
+            const data = await response.json();
+            document.getElementById('grammar-output').textContent = data.fixed_text || data.error;
+        }
+    </script>
+</body>
+</html>
